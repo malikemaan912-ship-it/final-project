@@ -1,5 +1,3 @@
-const cors = require('cors')
-app.use(cors())
 const express = require("express");
 const cors = require("cors");
 
@@ -7,6 +5,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 const recipes = [
   {
     id: 1,
@@ -39,11 +38,12 @@ app.get("/", (req, res) => {
     message: "🍴 Foodie Backend is Running!"
   });
 });
+
 app.get("/api/recipes", (req, res) => {
   res.json(recipes);
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Vercel ke liye ye zaroori hai
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
