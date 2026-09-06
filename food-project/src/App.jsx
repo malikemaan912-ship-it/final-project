@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import HomePage from "./pages/HomePage"; // 1. HomePage import
+
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./App.css";
 
 function App() {
@@ -9,15 +9,15 @@ function App() {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [favorites, setFavorites] = useState(() => {
   const savedFavorites = localStorage.getItem("foodieFavorites");
-  return savedFavorites? JSON.parse(savedFavorites) : [];
+  return savedFavorites ? JSON.parse(savedFavorites) : [];
 });
   const [selectedCountry, setSelectedCountry] = useState("All");
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     fetch("https://dummyjson.com/recipes?limit=0")
-     .then((response) => response.json())
-     .then((data) => {
+      .then((response) => response.json())
+      .then((data) => {
         const extraRecipies = [
           {
             id: 101,
@@ -30,7 +30,7 @@ function App() {
               "2 tablespoons soy sauce",
               "1 tablespoon vegetable oil",
               "Salt and pepper to salt to taste"
-            ],
+            ] ,
             instructions: [
               "Heat the vegetable oil in a large skillet or work over medium heat.",
               "Add the mixed vegetables and cook until tender.",
@@ -38,8 +38,8 @@ function App() {
               "Add the cooked rice to the skillet and stir everything together.",
               "Pour in the soy sauce and season with salt and pepper to taste.",
               "Cook for an additional 2-3 minutes, stirring occaasionally, until the rice is heated through.",
-              "Serve hot and enjoy!"
-            ],
+              "Serve hot and enjoy!" 
+            ] ,
             prepTimeMinutes: 10,
             cookTimeMinutes: 15,
             servings: 4,
@@ -68,31 +68,31 @@ function App() {
               "Salt and pepper to taste"
             ],
             instructions: [
-            "Choap all the vegetables into small pieces.",
+            "Choap all the  vegetables into small pieces.",
           "Heat olive oil in a pan.",
         "Cook onion and garlic until soft.",
       "Add eggplant, zucchins and tomatoes.",
-    "Season with herbs, salt and pepper.",
+    "Season with herbs , salt and pepper.",
   "Cook until vegetables are tender.",
 "Serve hot and enjoy!"
-],
-prepTimeMinutes: 15, // yahan typo theek kiya: prepTimeMinutws -> prepTimeMinutes
+],    
+prepTimeMinutws: 15,
 cookTimeMinutes: 30,
 servings: 4,
 difficulty: "Medium",
 caloriesPerServing: 220,
 tags: ["French", "Ratouille"],
 image: "https://cdn.dummyjson.com/recipe-images/33.webp",
-rating: 4.8,
+rating: 4.8 ,
 reviewCount: 45,
 mealType: ["Lunch", "Dinner"]
           }
         ];
 
-setRecipes([...data.recipes,...extraRecipies]);
+setRecipes([...data.recipes, ...extraRecipies]);
           })
 
-     .catch((error) => console.log("Error:", error));
+      .catch((error) => console.log("Error:", error));
   }, []);
   useEffect(() => {
   localStorage.setItem(
@@ -124,7 +124,7 @@ setRecipes([...data.recipes,...extraRecipies]);
 
       if (alreadyFavorite) {
         return currentFavorites.filter(
-          (item) => item.id!== recipe.id
+          (item) => item.id !== recipe.id
         );
       }
 
@@ -134,146 +134,409 @@ setRecipes([...data.recipes,...extraRecipies]);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.name
-     .toLowerCase()
-     .includes(search.toLowerCase());
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
     const matchesCountry =
       selectedCountry === "All" ||
-      recipe.cuisine === selectedCountry; // yahan typo theek kiya: cusine -> cuisine
+      (selectedCountry === "Chinese"
+        ? ["Chinese", "Asian"].includes(recipe.cuisine)
+        : selectedCountry === "French"
+        ? ["French", "European"].includes(recipe.cuisine)
+        : recipe.cuisine === selectedCountry);
 
     return matchesSearch && matchesCountry;
   });
 
   return (
-    <Router> {/* Router start */}
-      <nav className="navbar"> {/* Navbar ab sab pages pe rahega */}
-        <div className="logo">🍴 Foodie</div>
-        <div className="nav-links">
-          <Link to="/">Home</Link> {/* a tag ko Link me change kiya */}
-          <Link to="/recipes#countries">Countries</Link>
-          <Link to="/recipes#recipes">Recipes</Link>
-          <Link to="/recipes#favorites">Favorites ❤️</Link>
-          <Link to="/recipes#about">About</Link>
+    <div className={`app ${darkMode ? "dark-mode" : ""}`}>
+
+      {/* NAVBAR */}
+      {/* HIGH LEVEL NAVBAR */}
+<nav className="navbar-premium">
+  <div className="nav-container">
+    <div className="logo-premium">🍴 Foodie</div>
+
+    <div className="nav-links-premium">
+      <Link to="/">Home</Link>
+      <Link to="/recipes#countries">Explore</Link>
+      <Link to="/recipes#recipes">Recipes</Link>
+      <Link to="/recipes#favorites">Favorites ❤️</Link>
+      <Link to="/recipes#about">About</Link>
+    </div>
+
+    <div className="nav-actions">
+      <button className="theme-btn" onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? "☀️" : "🌙"}
+      </button>
+      <button className="login-btn-premium">Login</button>
+    </div>
+  </div>
+</nav>
+      <button
+  className="theme-btn"
+  onClick={() => setDarkMode(!darkMode)}
+>
+  {darkMode ? "☀️" : "🌙"}
+</button>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-content">
+
+          <p className="small-title">
+            WELCOME TO FOODIE
+          </p>
+
+          <h1>
+            Discover Your
+            <span> Favorite Recipe</span>
+          </h1>
+
+          <p className="description">
+            Explore delicious recipes, discover new flavors,
+            and make every meal special.
+          </p>
+
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search your favorite recipe..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <button>🔍 Search</button>
+          </div>
+
         </div>
-        <button className="login-btn">Login</button>
-      </nav>
+      </section>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} /> {/* Welcome Page */}
+      {/* COUNTRIES */}
+      <section className="countries-section" id="countries">
 
-        <Route path="/recipes" element={
-          <div className={`app ${darkMode? "dark-mode" : ""}`}>
+        <p className="section-label">
+          EXPLORE THE WORLD
+        </p>
+
+        <h2>
+          🌍 Choose Your <span>Favorite Cuisine</span>
+        </h2>
+
+        <p className="recipe-subtitle">
+          Taste delicious food from different countries
+        </p>
+
+        <div className="countries-container">
+
+          {countries.map((country) => (
+
             <button
-              className="theme-btn"
-              onClick={() => setDarkMode(!darkMode)}
+              key={country.name}
+              className={`country-card ${
+                selectedCountry === country.name
+                  ? "country-active"
+                  : ""
+              }`}
+              onClick={() =>
+                setSelectedCountry(country.name)
+              }
             >
-              {darkMode? "☀️" : "🌙"}
+
+              <div className="country-icon">
+                {country.emoji}
+              </div>
+
+              <div className="country-text">
+                {country.name}
+              </div>
+
+              <div className="country-arrow">
+                →
+              </div>
+
             </button>
 
-            {/* YAHAN SE TUMHARA PURANA SARA CODE HAI */}
-            {/* HERO */}
-            <section className="hero">
-              <div className="hero-content">
-                <p className="small-title">WELCOME TO FOODIE</p>
-                <h1>Discover Your<span> Favorite Recipe</span></h1>
-                <p className="description">Explore delicious recipes, discover new flavors, and make every meal special.</p>
-                <div className="search-box">
-                  <input type="text" placeholder="Search your favorite recipe..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                  <button>🔍 Search</button>
-                </div>
-              </div>
-            </section>
+          ))}
 
-            {/* COUNTRIES */}
-            <section className="countries-section" id="countries">
-              <p className="section-label">EXPLORE THE WORLD</p>
-              <h2>🌍 Choose Your <span>Favorite Cuisine</span></h2>
-              <p className="recipe-subtitle">Taste delicious food from different countries</p>
-              <div className="countries-container">
-                {countries.map((country) => (
-                  <button key={country.name} className={`country-card ${selectedCountry === country.name? "country-active" : ""}`} onClick={() => setSelectedCountry(country.name)}>
-                    <div className="country-icon">{country.emoji}</div>
-                    <div className="country-text">{country.name}</div>
-                    <div className="country-arrow">→</div>
-                  </button>
-                ))}
-              </div>
-            </section>
+        </div>
 
-            {/* RECIPES */}
-            <section className="recipes" id="recipes">
-              <p className="section-label">DELICIOUS FOOD</p>
-              <h2>{selectedCountry === "All"? "Popular Recipes 🍽️" : `${selectedCountry} Recipes 🍽️`}</h2>
-              <p className="recipe-subtitle">{search? `${filteredRecipes.length} recipes found` : `${filteredRecipes.length} delicious recipes waiting for you`}</p>
-              <div className="recipe-container">
-                {filteredRecipes.map((recipe) => (
-                  <div className="recipe-card" key={recipe.id}>
-                    <div className="image-wrapper">
-                      <img src={recipe.image} alt={recipe.name} className="recipe-image" />
-                      <button className={`favorite-btn ${favorites.some((item) => item.id === recipe.id)? "favorite-active" : ""}`} onClick={() => toggleFavorite(recipe)}>❤️</button>
-                    </div>
-                    <div className="recipe-info">
-                      <h3>{recipe.name}</h3>
-                      <p>🍽️ {recipe.cuisine}</p>
-                      <p>⭐ {recipe.rating}</p>
-                      <button className="view-btn" onClick={() => setSelectedRecipe(recipe)}>View Recipe<span>→</span></button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {filteredRecipes.length === 0 && (<div className="no-results"><div>😔</div><h3>No Recipe Found</h3><p>Try another country or search for another recipe.</p></div>)}
-            </section>
+      </section>
 
-            {/* FAVORITES */}
-            <section className="recipes favorites-section" id="favorites">
-              <p className="section-label">YOUR COLLECTION</p>
-              <h2>❤️ My Favorites</h2>
-              <p className="recipe-subtitle">{favorites.length === 0? "You haven't added any favorites yet." : `${favorites.length} favorite recipe(s)`}</p>
-              <div className="recipe-container">
-                {favorites.map((recipe) => (
-                  <div className="recipe-card" key={recipe.id}>
-                    <div className="image-wrapper"><img src={recipe.image} alt={recipe.name} className="recipe-image" /></div>
-                    <div className="recipe-info">
-                      <h3>{recipe.name}</h3>
-                      <p>🍽️ {recipe.cuisine}</p>
-                      <button className="view-btn" onClick={() => setSelectedRecipe(recipe)}>View Recipe<span>→</span></button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+      {/* RECIPES */}
+      <section className="recipes" id="recipes">
 
-            {/* MODAL */}
-            {selectedRecipe && (
-              <div className="recipe-modal">
-                <div className="recipe-details">
-                  <button className="close-btn" onClick={() => setSelectedRecipe(null)}>✕</button>
-                  <img src={selectedRecipe.image} alt={selectedRecipe.name} className="details-image" />
-                  <h2>{selectedRecipe.name}</h2>
-                  <div className="details-info">
-                    <span>🍽️ {selectedRecipe.cuisine}</span>
-                    <span>⭐ {selectedRecipe.rating}</span>
-                    <span>⏱️ {selectedRecipe.prepTimeMinutes} min prep</span>
-                    <span>🔥 {selectedRecipe.cookTimeMinutes} min cook</span>
-                  </div>
-                  <h3>🥗 Ingredients</h3>
-                  <ul className="ingredients-list">{selectedRecipe.ingredients.map((ingredient, index) => (<li key={index}>{ingredient}</li>))}</ul>
-                  <h3>👨‍🍳 Instructions</h3>
-                  <ol className="instructions-list">{selectedRecipe.instructions.map((instruction, index) => (<li key={index}>{instruction}</li>))}</ol>
-                  <button className="close-details" onClick={() => setSelectedRecipe(null)}>Close Recipe</button>
-                </div>
-              </div>
-            )}
+        <p className="section-label">
+          DELICIOUS FOOD
+        </p>
 
-            {/* FOOTER */}
-            <footer className="footer" id="about">
-              <h2>🍴 Foodie</h2>
-              <p>Made with ❤️ for food lovers</p>
-            </footer>
+        <h2>
+          {selectedCountry === "All"
+            ? "Popular Recipes 🍽️"
+            : `${selectedCountry} Recipes 🍽️`}
+        </h2>
+
+        <p className="recipe-subtitle">
+          {search
+            ? `${filteredRecipes.length} recipes found`
+            : `${filteredRecipes.length} delicious recipes waiting for you`}
+        </p>
+
+        <div className="recipe-container">
+
+          {filteredRecipes.map((recipe) => (
+
+            <div className="recipe-card" key={recipe.id}>
+
+              <div className="image-wrapper">
+
+                <img
+                  src={recipe.image}
+                  alt={recipe.name}
+                  className="recipe-image"
+                />
+
+                <button
+                  className={`favorite-btn ${
+                    favorites.some(
+                      (item) => item.id === recipe.id
+                    )
+                      ? "favorite-active"
+                      : ""
+                  }`}
+                  onClick={() => toggleFavorite(recipe)}
+                >
+                  ❤️
+                </button>
+
+              </div>
+
+              <div className="recipe-info">
+
+                <h3>{recipe.name}</h3>
+
+                <p>
+                  🍽️ {recipe.cuisine}
+                </p>
+
+                <p>
+                  ⭐ {recipe.rating}
+                </p>
+
+                <button
+                  className="view-btn"
+                  onClick={() =>
+                    setSelectedRecipe(recipe)
+                  }
+                >
+                  View Recipe
+                  <span>→</span>
+                </button>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        {filteredRecipes.length === 0 && (
+          <div className="no-results">
+            <div>😔</div>
+            <h3>No Recipe Found</h3>
+            <p>
+              Try another country or search for another recipe.
+            </p>
           </div>
-        } />
-      </Routes>
-    </Router>
+        )}
+
+      </section>
+
+      {/* FAVORITES */}
+      <section
+        className="recipes favorites-section"
+        id="favorites"
+      >
+
+        <p className="section-label">
+          YOUR COLLECTION
+        </p>
+
+        <h2>
+          ❤️ My Favorites
+        </h2>
+
+        <p className="recipe-subtitle">
+          {favorites.length === 0
+            ? "You haven't added any favorites yet."
+            : `${favorites.length} favorite recipe(s)`}
+        </p>
+
+        <div className="recipe-container">
+
+          {favorites.map((recipe) => (
+
+            <div
+              className="recipe-card"
+              key={recipe.id}
+            >
+
+              <div className="image-wrapper">
+
+                <img
+                  src={recipe.image}
+                  alt={recipe.name}
+                  className="recipe-image"
+                />
+
+              </div>
+
+              <div className="recipe-info">
+
+                <h3>{recipe.name}</h3>
+
+                <p>
+                  🍽️ {recipe.cuisine}
+                </p>
+
+                <button
+                  className="view-btn"
+                  onClick={() =>
+                    setSelectedRecipe(recipe)
+                  }
+                >
+                  View Recipe
+                  <span>→</span>
+                </button>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* MODAL */}
+      {selectedRecipe && (
+
+        <div className="recipe-modal">
+
+          <div className="recipe-details">
+
+            <button
+              className="close-btn"
+              onClick={() =>
+                setSelectedRecipe(null)
+              }
+            >
+              ✕
+            </button>
+
+            <img
+              src={selectedRecipe.image}
+              alt={selectedRecipe.name}
+              className="details-image"
+            />
+
+            <h2>
+              {selectedRecipe.name}
+            </h2>
+
+            <div className="details-info">
+
+              <span>
+                🍽️ {selectedRecipe.cuisine}
+              </span>
+
+              <span>
+                ⭐ {selectedRecipe.rating}
+              </span>
+
+              <span>
+                ⏱️ {selectedRecipe.prepTimeMinutes} min prep
+              </span>
+
+              <span>
+                🔥 {selectedRecipe.cookTimeMinutes} min cook
+              </span>
+
+            </div>
+
+            <h3>
+              🥗 Ingredients
+            </h3>
+
+            <ul className="ingredients-list">
+
+              {selectedRecipe.ingredients.map(
+                (ingredient, index) => (
+                  <li key={index}>
+                    {ingredient}
+                  </li>
+                )
+              )}
+
+            </ul>
+
+            <h3>
+              👨‍🍳 Instructions
+            </h3>
+
+            <ol className="instructions-list">
+
+              {selectedRecipe.instructions.map(
+                (instruction, index) => (
+                  <li key={index}>
+                    {instruction}
+                  </li>
+                )
+              )}
+
+            </ol>
+
+            <button
+              className="close-details"
+              onClick={() =>
+                setSelectedRecipe(null)
+              }
+            >
+              Close Recipe
+            </button>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* FOOTER */}
+      {/* HIGH LEVEL FOOTER */}
+<footer className="footer-premium" id="about">
+  <div className="footer-container">
+    <div className="footer-col">
+      <h2>🍴 Foodie</h2>
+      <p>Discover recipes from every corner of the world. Cook with love, eat with joy.</p>
+    </div>
+    <div className="footer-col">
+      <h4>Quick Links</h4>
+      <Link to="/">Home</Link>
+      <Link to="/recipes">Recipes</Link>
+      <Link to="/recipes#favorites">Favorites</Link>
+    </div>
+    <div className="footer-col">
+      <h4>Follow Us</h4>
+      <p>Instagram • Facebook • Twitter</p>
+    </div>
+  </div>
+  <div className="footer-bottom">
+    <p>© 2026 Foodie. Made with ❤️ for food lovers</p>
+  </div>
+</footer>
+    </div>
   );
 }
 
