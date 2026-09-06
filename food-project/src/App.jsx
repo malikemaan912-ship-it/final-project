@@ -13,7 +13,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + "/api/recipes")
+    fetch("https://dummyjson.com/recipes?limit=100")
      .then((response) => response.json())
      .then((data) => {
         const extraRecipies = [
